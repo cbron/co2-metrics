@@ -1,0 +1,10 @@
+click==7.1.2
+CO2meter==0.2.5
+Flask==1.1.2
+Flask-Caching==1.9.0
+future==0.18.2
+hidapi==0.9.0.post3
+itsdangerous==1.1.0
+Jinja2==2.11.2
+MarkupSafe==1.1.1
+Werkzeug==1.0.1

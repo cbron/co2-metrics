@@ -1,0 +1,44 @@
+version: '3'
+services:
+  # prom
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prom/prometheus.yaml:/etc/prometheus/prometheus.yaml
+      - ./prom/data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+      - '--web.route-prefix=/'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    ports:
+      - '9090:9090'
+    links:
+      - node-exporter:node-exporter
+      - co2-server:co2-server
+  co2-server:
+    image: cbron/co2-server
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+  # node exporter
+  node-exporter:
+    image: prom/node-exporter
+    restart: unless-stopped
+    ports:
+      - '9100:9100'
+  # grafana
+  grafana:
+    image: grafana/grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=secure_pass
+    volumes:
+      - ./grafana:/var/lib/grafana
+    depends_on:
+      - prometheus
+    ports:
+      - '3000:3000'
+    links:
+      - prometheus:prometheus
