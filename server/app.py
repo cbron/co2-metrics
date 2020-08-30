@@ -11,21 +11,12 @@ cache = Cache(config={'CACHE_TYPE': 'simple'})
 cache.init_app(app)
 
 def grab_data():
-	response = {}
-	try:
-		mon = co2.CO2monitor()
-		data = mon.read_data()
-		response = {
-			"time": time.mktime(data.index[0].timetuple()),
-			"co2": data["co2"],
-			"temp": data["temp"],
-		}
-	except:
-		response = {
-			"status": "failure"
-		}
-	return response
-
+	mon = co2.CO2monitor()
+	data = mon.read_data() # 0 is time, 1 is co2, 2 is temp
+	return {
+		"co2": data[1],
+		"temp": round(9 / 5 * data[2] + 32, 2),
+	}
 
 @app.route('/')
 @cache.cached(timeout=30)
